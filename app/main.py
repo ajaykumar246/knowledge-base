@@ -15,6 +15,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from app.api.routes import router as system_router
+from app.api.upload import router as upload_router
 from app.core.config import settings
 from app.core.database import close_redis_client, get_chroma_client, get_redis_client
 
@@ -84,8 +85,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Register API routers under versioned prefix
+# Register API routers
+# Mounting both under versioned prefix (/api/v1) and top-level convenience alias
 app.include_router(system_router, prefix=settings.API_V1_PREFIX)
+app.include_router(upload_router, prefix=settings.API_V1_PREFIX)
+app.include_router(upload_router)  # Direct /upload convenience alias
 
 
 @app.get(
@@ -109,7 +113,7 @@ async def root() -> JSONResponse:
             "endpoints": {
                 "health": f"{settings.API_V1_PREFIX}/health",
                 "info": f"{settings.API_V1_PREFIX}/info",
-                "upload": f"{settings.API_V1_PREFIX}/upload (Phase 2)",
+                "upload": "/upload",
                 "chat": f"{settings.API_V1_PREFIX}/chat (Phase 3)",
             },
         }
