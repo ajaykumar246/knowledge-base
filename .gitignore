@@ -50,6 +50,7 @@ temp/
 .idea/
 *.swp
 *.swo
+docs/
 
 # OS specific files
 .DS_Store
