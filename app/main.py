@@ -14,6 +14,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
+from app.api.chat import router as chat_router
 from app.api.routes import router as system_router
 from app.api.upload import router as upload_router
 from app.core.config import settings
@@ -90,6 +91,8 @@ app.add_middleware(
 app.include_router(system_router, prefix=settings.API_V1_PREFIX)
 app.include_router(upload_router, prefix=settings.API_V1_PREFIX)
 app.include_router(upload_router)  # Direct /upload convenience alias
+app.include_router(chat_router, prefix=settings.API_V1_PREFIX)
+app.include_router(chat_router)  # Direct /chat convenience alias
 
 
 @app.get(
@@ -114,7 +117,7 @@ async def root() -> JSONResponse:
                 "health": f"{settings.API_V1_PREFIX}/health",
                 "info": f"{settings.API_V1_PREFIX}/info",
                 "upload": "/upload",
-                "chat": f"{settings.API_V1_PREFIX}/chat (Phase 3)",
+                "chat": "/chat",
             },
         }
     )
